@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quiet Mastery — Command Center</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Command Center">
+<meta name="theme-color" content="#0b0a08">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0a08;
+    --surface:#12100c;
+    --surface2:#171410;
+    --line:rgba(201,162,39,.22);
+    --line-soft:rgba(201,162,39,.12);
+    --gold:#c9a227;
+    --gold-bright:#e6c866;
+    --text:#ece7da;
+    --muted:#8f887a;
+    --danger:#b3552e;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.55;
+    min-height:100vh;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    background-image:radial-gradient(ellipse 90% 50% at 50% -10%,rgba(201,162,39,.06),transparent);
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
+
+  /* ---------- Header ---------- */
+  header{text-align:center;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .wordmark{
+    font-family:var(--sans);font-weight:600;font-size:12px;
+    letter-spacing:.42em;text-transform:uppercase;color:var(--gold);
+  }
+  .motto{
+    font-family:var(--serif);font-style:italic;font-size:17px;
+    color:var(--muted);margin-top:6px;
+  }
+  .today{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);margin-top:14px;
+  }
+
+  /* ---------- Quote ---------- */
+  .quote{
+    padding:30px 8px 26px;text-align:center;border-bottom:1px solid var(--line-soft);
+  }
+  .quote p{
+    font-family:var(--serif);font-size:clamp(21px,4.5vw,26px);
+    font-weight:500;line-height:1.35;color:var(--text);
+  }
+  .quote p::before{content:'\201E';color:var(--gold);margin-right:2px}
+  .quote p::after{content:'\201D';color:var(--gold);margin-left:2px}
+
+  /* ---------- Streak ---------- */
+  .streak{padding:30px 0 26px;text-align:center;border-bottom:1px solid var(--line-soft)}
+  .streak-num{
+    font-family:var(--serif);font-weight:600;
+    font-size:clamp(72px,18vw,104px);line-height:1;
+    color:var(--gold-bright);
+    text-shadow:0 0 40px rgba(201,162,39,.25);
+  }
+  .streak-label{
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--muted);margin-top:8px;
+  }
+  .day-status{
+    display:inline-block;margin-top:16px;padding:7px 16px;
+    border:1px solid var(--line);border-radius:100px;
+    font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  }
+  .day-status.won{
+    border-color:var(--gold);color:var(--gold-bright);
+    background:rgba(201,162,39,.08);
+  }
+  .cal{
+    display:grid;grid-template-columns:repeat(15,1fr);gap:6px;
+    max-width:420px;margin:24px auto 0;
+  }
+  .cal div{
+    aspect-ratio:1;border-radius:3px;background:var(--surface2);
+    border:1px solid transparent;
+  }
+  .cal div.won{background:var(--gold);box-shadow:0 0 6px rgba(201,162,39,.4)}
+  .cal div.today{border-color:var(--gold-bright)}
+  .cal-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+
+  /* ---------- Sections ---------- */
+  section{padding:28px 0;border-bottom:1px solid var(--line-soft)}
+  h2{
+    font-family:var(--sans);font-size:12px;font-weight:600;
+    letter-spacing:.3em;text-transform:uppercase;color:var(--gold);
+    margin-bottom:18px;
+  }
+  h2 .sub{display:block;font-weight:400;letter-spacing:.02em;text-transform:none;color:var(--muted);font-size:12px;margin-top:5px}
+
+  /* ---------- Missions ---------- */
+  .mission{
+    display:flex;align-items:center;gap:12px;
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:13px 14px;margin-bottom:10px;
+  }
+  .mission.main{border-color:var(--line);background:linear-gradient(135deg,rgba(201,162,39,.07),var(--surface))}
+  .mission .tag{
+    font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold);white-space:nowrap;
+  }
+  .checkbox{
+    width:26px;height:26px;min-width:26px;border-radius:6px;
+    border:1.5px solid var(--gold);background:transparent;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    color:var(--bg);font-size:15px;font-weight:700;transition:background .15s;
+  }
+  .checkbox.on{background:var(--gold)}
+  .mission input[type=text]{
+    flex:1;background:transparent;border:none;outline:none;
+    color:var(--text);font-family:var(--sans);font-size:16px;min-width:0;
+    -webkit-appearance:none;appearance:none;border-radius:0;
+  }
+  .mission input[type=text]::placeholder{color:var(--muted);opacity:.7}
+  .mission.done input[type=text]{color:var(--muted);text-decoration:line-through}
+
+  /* ---------- Posting window ---------- */
+  .window-box{
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:18px;text-align:center;
+  }
+  .window-box .state{font-family:var(--serif);font-size:22px;font-weight:600}
+  .window-box .detail{font-size:12px;color:var(--muted);margin-top:6px}
+  .window-box.open{border-color:var(--gold);background:rgba(201,162,39,.08)}
+  .window-box.open .state{color:var(--gold-bright);animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  @media (prefers-reduced-motion:reduce){.window-box.open .state{animation:none}}
+
+  /* ---------- TikTok drain ---------- */
+  .drain-box{
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:18px;text-align:center;
+  }
+  .drain-total{font-family:var(--serif);font-size:34px;font-weight:600}
+  .drain-total.warn{color:var(--danger)}
+  .drain-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  .drain-btns{display:flex;gap:10px;justify-content:center;margin-top:16px}
+  .drain-btns button{
+    background:transparent;border:1px solid var(--line);border-radius:8px;
+    color:var(--text);font-family:var(--sans);font-size:14px;
+    padding:11px 18px;cursor:pointer;transition:border-color .15s;
+  }
+  .drain-btns button:active{border-color:var(--gold);background:rgba(201,162,39,.08)}
+  .drain-verdict{font-size:12px;color:var(--muted);margin-top:14px;font-style:italic}
+
+  /* ---------- Tomorrow ---------- */
+  .tmr input{
+    width:100%;background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:13px 14px;margin-bottom:10px;
+    color:var(--text);font-family:var(--sans);font-size:16px;outline:none;
+    -webkit-appearance:none;appearance:none;
+  }
+  .tmr input:focus{border-color:var(--gold)}
+  .tmr input::placeholder{color:var(--muted);opacity:.7}
+  .tmr .hint{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* ---------- Footer ---------- */
+  footer{text-align:center;padding-top:30px}
+  footer .sa{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:15px}
+  footer .reset{
+    display:inline-block;margin-top:16px;background:none;border:none;
+    color:var(--muted);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    cursor:pointer;opacity:.5;text-decoration:underline;font-family:var(--sans);
+  }
+  .savenote{
+    position:fixed;bottom:calc(14px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+    background:var(--surface2);border:1px solid var(--line);
+    color:var(--gold-bright);font-size:11px;letter-spacing:.08em;
+    padding:6px 14px;border-radius:100px;opacity:0;transition:opacity .3s;
+    pointer-events:none;
+  }
+  .savenote.show{opacity:1}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+  /* ---------- Optimizare telefon (ecrane sub 480px) ---------- */
+  @media (max-width:480px){
+    .wrap{padding:22px 16px 48px}
+    section{padding:24px 0}
+    .quote{padding:26px 4px 22px}
+    .streak{padding:26px 0 22px}
+    .cal{grid-template-columns:repeat(10,1fr);gap:7px;max-width:100%}
+    .cal div{border-radius:4px}
+    .mission{padding:14px 12px;gap:10px}
+    .checkbox{width:32px;height:32px;min-width:32px;border-radius:8px;font-size:17px}
+    .tag-text{display:none}
+    .drain-btns{gap:8px}
+    .drain-btns button{flex:1;padding:14px 0;min-height:48px;font-size:15px}
+    .tmr input{padding:15px 14px}
+    .window-box{padding:20px 16px}
+    .drain-box{padding:20px 16px}
+    footer{padding-top:26px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="wordmark">Quiet Mastery</div>
+    <div class="motto">Sapere aude.</div>
+    <div class="today" id="todayLabel"></div>
+  </header>
+
+  <div class="quote"><p id="quoteText"></p></div>
+
+  <div class="streak">
+    <div class="streak-num" id="streakNum">0</div>
+    <div class="streak-label">zile stăpânite la rând</div>
+    <div class="day-status" id="dayStatus">Ziua nu e câștigată încă</div>
+    <div class="cal" id="cal"></div>
+    <div class="cal-label">Ultimele 30 de zile</div>
+  </div>
+
+  <section>
+    <h2>Misiunile zilei<span class="sub">Bifează misiunea principală ca să câștigi ziua.</span></h2>
+    <div id="missions"></div>
+  </section>
+
+  <section>
+    <h2>Fereastra de postare</h2>
+    <div class="window-box" id="windowBox">
+      <div class="state" id="windowState"></div>
+      <div class="detail" id="windowDetail"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Am scăpat pe TikTok<span class="sub">Fii sincer. Apasă când te prinzi în scroll.</span></h2>
+    <div class="drain-box">
+      <div class="drain-total" id="drainTotal">0 min</div>
+      <div class="drain-label">pierdute azi în gol</div>
+      <div class="drain-btns">
+        <button onclick="addDrain(5)">+5 min</button>
+        <button onclick="addDrain(15)">+15 min</button>
+        <button onclick="addDrain(30)">+30 min</button>
+      </div>
+      <div class="drain-verdict" id="drainVerdict"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ritual de seară<span class="sub">Scrie cele 3 misiuni pentru mâine. Te vor aștepta la trezire.</span></h2>
+    <div class="tmr">
+      <input type="text" id="tmr0" placeholder="1. Misiunea principală de mâine" autocomplete="off">
+      <input type="text" id="tmr1" placeholder="2." autocomplete="off">
+      <input type="text" id="tmr2" placeholder="3." autocomplete="off">
+      <div class="hint" id="tmrHint"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="sa">While they make noise, you master the game.</div>
+    <button class="reset" onclick="resetAll()">Șterge toate datele</button>
+  </footer>
+
+</div>
+<div class="savenote" id="savenote">Salvat</div>
+
+<script>
+/* ================= Quotes (30, one per day) ================= */
+const QUOTES = [
+"Cât timp ei fac zgomot, tu stăpânești jocul.",
+"Disciplina e libertatea plătită în avans.",
+"Nimeni nu vine să te salveze. Asta e vestea bună.",
+"Motivația e pentru amatori. Profesioniștii au un program.",
+"Ziua se câștigă înainte de prânz.",
+"Nu ai nevoie de mai mult timp. Ai nevoie de mai puține scuze.",
+"Telefonul tău e proiectat să te învingă. Nu-l lăsa.",
+"Ce faci azi în tăcere se vede mâine în rezultate.",
+"Confortul e o datorie cu dobândă.",
+"Ești ori arhitectul zilei tale, ori materialul ei.",
+"Micile victorii repetate bat marile planuri abandonate.",
+"Oboseala trece. Regretul rămâne.",
+"Nu te compara cu ei. Ei nici nu s-au apucat.",
+"O oră concentrat valorează cât o zi distras.",
+"Începe prost, dar începe. Perfecțiunea e o formă de amânare.",
+"Streak-ul tău e singura statistică ce contează azi.",
+"Cine își controlează dimineața își controlează viața.",
+"Scrollul e somnul celor treji.",
+"Fă lucrul greu întâi. Restul zilei devine ușor.",
+"Consecvența e plictisitoare. Rezultatele ei nu sunt.",
+"Nu aștepta chef. Cheful vine după primul pas.",
+"Fiecare zi câștigată e o cărămidă. Zidul se vede mai târziu.",
+"Tăcerea în care muncești e mai tare decât zgomotul lor.",
+"Azi e singura zi pe care o poți stăpâni.",
+"Un om cu un plan bate zece cu talent.",
+"Ce eviți azi te va aștepta mâine, mai mare.",
+"Energia nu se găsește. Se construiește.",
+"Fii omul care face misiunea 1. Restul e detaliu.",
+"Viitorul tău se uită la ce faci în următoarea oră.",
+"Sapere aude. Îndrăznește să știi ce ai de făcut — și fă."
+];
+
+/* ================= State (localStorage — datele stau în telefonul tău) ================= */
+const KEY = 'qm-command-center-v1';
+let state = { days:{}, planned:{} };
+let currentKey = dkey(new Date());
+
+function dkey(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function emptyDay(){
+  return { missions:[{t:'',d:false},{t:'',d:false},{t:'',d:false}], tiktok:0 };
+}
+function dayWon(day){ return !!(day && day.missions[0].d && day.missions[0].t.trim()); }
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) state = JSON.parse(raw);
+  }catch(e){ console.error('Nu am putut citi datele', e); }
+}
+let noteTimer=null;
+function save(showNote){
+  try{
+    localStorage.setItem(KEY, JSON.stringify(state));
+    if(showNote){
+      const n=document.getElementById('savenote');
+      n.classList.add('show');
+      clearTimeout(noteTimer);
+      noteTimer=setTimeout(()=>n.classList.remove('show'),1200);
+    }
+  }catch(e){ console.error('Salvare eșuată', e); }
+}
+
+/* ================= Day init / rollover ================= */
+function ensureToday(){
+  const k = dkey(new Date());
+  currentKey = k;
+  if(!state.days[k]){
+    const day = emptyDay();
+    if(state.planned[k]){
+      state.planned[k].forEach((t,i)=>{ if(i<3) day.missions[i].t = t||''; });
+      delete state.planned[k];
+    }
+    state.days[k] = day;
+    save(false);
+  }
+}
+
+/* ================= Render ================= */
+const MONTHS=['ianuarie','februarie','martie','aprilie','mai','iunie','iulie','august','septembrie','octombrie','noiembrie','decembrie'];
+const DAYS=['duminică','luni','marți','miercuri','joi','vineri','sâmbătă'];
+
+function renderHeader(){
+  const n=new Date();
+  document.getElementById('todayLabel').textContent =
+    DAYS[n.getDay()]+', '+n.getDate()+' '+MONTHS[n.getMonth()]+' '+n.getFullYear();
+}
+function renderQuote(){
+  const n=new Date();
+  const start=new Date(n.getFullYear(),0,0);
+  const doy=Math.floor((n-start)/86400000);
+  document.getElementById('quoteText').textContent = QUOTES[doy % QUOTES.length];
+}
+function computeStreak(){
+  let streak=0;
+  if(dayWon(state.days[dkey(new Date())])) streak++;
+  for(let i=1;i<3650;i++){
+    const p=new Date(); p.setDate(p.getDate()-i);
+    if(dayWon(state.days[dkey(p)])) streak++;
+    else break;
+  }
+  return streak;
+}
+function renderStreak(){
+  document.getElementById('streakNum').textContent = computeStreak();
+  const won = dayWon(state.days[currentKey]);
+  const el=document.getElementById('dayStatus');
+  el.textContent = won ? '✓ Ziua e câștigată' : 'Ziua nu e câștigată încă';
+  el.classList.toggle('won', won);
+  const cal=document.getElementById('cal'); cal.innerHTML='';
+  for(let i=29;i>=0;i--){
+    const p=new Date(); p.setDate(p.getDate()-i);
+    const c=document.createElement('div');
+    if(dayWon(state.days[dkey(p)])) c.classList.add('won');
+    if(i===0) c.classList.add('today');
+    c.title=dkey(p);
+    cal.appendChild(c);
+  }
+}
+function renderMissions(){
+  const day=state.days[currentKey];
+  const box=document.getElementById('missions'); box.innerHTML='';
+  day.missions.forEach((m,i)=>{
+    const row=document.createElement('div');
+    row.className='mission'+(i===0?' main':'')+(m.d?' done':'');
+    const cb=document.createElement('button');
+    cb.className='checkbox'+(m.d?' on':'');
+    cb.setAttribute('aria-label','Bifează misiunea '+(i+1));
+    cb.textContent=m.d?'✓':'';
+    const inp=document.createElement('input');
+    inp.type='text';
+    inp.placeholder=i===0?'Misiunea principală — asta decide ziua':(i+1)+'.';
+    inp.value=m.t;
+    inp.oninput=()=>{ m.t=inp.value; save(false); };
+    inp.onblur=()=>{ save(true); };
+    cb.onclick=()=>{
+      if(!m.t.trim() && !m.d){ inp.focus(); return; }
+      m.d=!m.d; save(true); renderMissions(); renderStreak();
+    };
+    row.appendChild(cb);
+    if(i===0){ const tag=document.createElement('span'); tag.className='tag'; tag.innerHTML='★ <span class="tag-text">principală</span>'; row.appendChild(tag); }
+    row.appendChild(inp);
+    box.appendChild(row);
+  });
+}
+function renderWindow(){
+  const h=new Date().getHours();
+  const box=document.getElementById('windowBox');
+  const st=document.getElementById('windowState');
+  const dt=document.getElementById('windowDetail');
+  box.classList.remove('open');
+  if(h>=19 && h<22){
+    box.classList.add('open');
+    st.textContent='Fereastra e deschisă — postează';
+    dt.textContent='19:00 – 22:00 · momentul tău';
+  }else if(h<19){
+    st.textContent='Fereastra se deschide la 19:00';
+    dt.textContent='Până atunci: creezi, nu consumi.';
+  }else{
+    st.textContent='Fereastra s-a închis';
+    dt.textContent='Mâine, 19:00. Acum: ritualul de seară.';
+  }
+}
+function renderDrain(){
+  const day=state.days[currentKey];
+  const t=document.getElementById('drainTotal');
+  const v=document.getElementById('drainVerdict');
+  const m=day.tiktok||0;
+  t.textContent = m>=60 ? Math.floor(m/60)+'h '+(m%60)+'min' : m+' min';
+  t.classList.toggle('warn', m>=60);
+  if(m===0) v.textContent='Zero. Așa arată controlul.';
+  else if(m<30) v.textContent='Încă recuperabil. Închide-l.';
+  else if(m<60) v.textContent='Jumătate de oră dusă. Ea nu se mai întoarce.';
+  else v.textContent='Ei fac zgomot — și tu îi asculți. Înapoi la joc.';
+}
+function addDrain(min){
+  state.days[currentKey].tiktok=(state.days[currentKey].tiktok||0)+min;
+  save(true); renderDrain();
+}
+function renderTomorrow(){
+  const tk=dkey(new Date(Date.now()+86400000));
+  const plan=state.planned[tk]||['','',''];
+  for(let i=0;i<3;i++){
+    const inp=document.getElementById('tmr'+i);
+    inp.value=plan[i]||'';
+    inp.oninput=()=>{
+      const arr=state.planned[tk]||['','',''];
+      arr[i]=inp.value; state.planned[tk]=arr; save(false);
+    };
+    inp.onblur=()=>{ save(true); };
+  }
+  const t=new Date(Date.now()+86400000);
+  document.getElementById('tmrHint').textContent='Pentru '+DAYS[t.getDay()]+', '+t.getDate()+' '+MONTHS[t.getMonth()]+'.';
+}
+function resetAll(){
+  if(!confirm('Sigur? Se șterg streak-ul, istoricul și tot ce ai scris. Nu se poate anula.')) return;
+  state={days:{},planned:{}};
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  ensureToday(); renderAll();
+}
+function renderAll(){
+  renderHeader(); renderQuote(); renderStreak();
+  renderMissions(); renderWindow(); renderDrain(); renderTomorrow();
+}
+
+/* ================= Boot ================= */
+loadState();
+ensureToday();
+renderAll();
+setInterval(()=>{
+  renderWindow();
+  if(dkey(new Date())!==currentKey){ ensureToday(); renderAll(); }
+},30000);
+</script>
+</body>
+</html>
