@@ -29,7 +29,7 @@
     --sans:'Inter',-apple-system,'Segoe UI',Roboto,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%;overflow-x:hidden}
   body{
     background:var(--bg);
     color:var(--text);
@@ -37,11 +37,15 @@
     font-size:15px;
     line-height:1.55;
     min-height:100vh;
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+    overscroll-behavior-x:none;
     padding-top:env(safe-area-inset-top);
     padding-bottom:env(safe-area-inset-bottom);
     background-image:radial-gradient(ellipse 90% 50% at 50% -10%,rgba(201,162,39,.06),transparent);
   }
-  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
+  .wrap{max-width:640px;width:100%;margin:0 auto;padding:28px 20px 60px}
 
   /* ---------- Header ---------- */
   header{text-align:center;padding-bottom:22px;border-bottom:1px solid var(--line)}
@@ -90,17 +94,30 @@
     border-color:var(--gold);color:var(--gold-bright);
     background:rgba(201,162,39,.08);
   }
+  /* ---------- Mini-statistici ---------- */
+  .stats-row{display:flex;justify-content:center;margin-top:22px}
+  .stat{padding:0 26px;text-align:center}
+  .stat + .stat{border-left:1px solid var(--line-soft)}
+  .stat-num{
+    font-family:var(--serif);font-weight:600;font-size:28px;line-height:1;
+    color:var(--gold-bright);
+  }
+  .stat-label{
+    font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-top:7px;
+  }
+  /* ---------- Calendar (compact) ---------- */
   .cal{
-    display:grid;grid-template-columns:repeat(15,1fr);gap:6px;
-    max-width:420px;margin:24px auto 0;
+    display:grid;grid-template-columns:repeat(10,1fr);gap:5px;
+    max-width:300px;margin:24px auto 0;
   }
   .cal div{
-    aspect-ratio:1;border-radius:3px;background:var(--surface2);
-    border:1px solid transparent;
+    aspect-ratio:1;border-radius:4px;background:var(--surface2);
+    border:1px solid var(--line-soft);
   }
-  .cal div.won{background:var(--gold);box-shadow:0 0 6px rgba(201,162,39,.4)}
-  .cal div.today{border-color:var(--gold-bright)}
-  .cal-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+  .cal div.won{background:var(--gold);border-color:var(--gold);box-shadow:0 0 6px rgba(201,162,39,.4)}
+  .cal div.today{border-color:var(--gold-bright);border-width:1.5px}
+  .cal-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:12px}
 
   /* ---------- Sections ---------- */
   section{padding:28px 0;border-bottom:1px solid var(--line-soft)}
@@ -137,16 +154,82 @@
   .mission input[type=text]::placeholder{color:var(--muted);opacity:.7}
   .mission.done input[type=text]{color:var(--muted);text-decoration:line-through}
 
-  /* ---------- Posting window ---------- */
+  /* ---------- Marcaje rapide ---------- */
+  .marks{display:flex;flex-wrap:wrap;gap:9px}
+  .mark{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:100px;padding:11px 15px;min-height:44px;
+    color:var(--muted);font-family:var(--sans);font-size:14px;
+    cursor:pointer;transition:border-color .15s,color .15s,background .15s;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .mark .dot{
+    width:15px;height:15px;border-radius:50%;
+    border:1.5px solid var(--line);flex-shrink:0;
+    transition:background .15s,border-color .15s;
+  }
+  .mark.on{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,162,39,.08)}
+  .mark.on .dot{background:var(--gold);border-color:var(--gold)}
+
+  /* ---------- Idei de conținut ---------- */
+  .idea-add{display:flex;gap:10px;margin-bottom:14px}
+  .idea-add input{
+    flex:1;min-width:0;background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:13px 14px;color:var(--text);
+    font-family:var(--sans);font-size:16px;outline:none;-webkit-appearance:none;appearance:none;
+  }
+  .idea-add input:focus{border-color:var(--gold)}
+  .idea-add input::placeholder{color:var(--muted);opacity:.7}
+  .idea-add-btn{
+    background:rgba(201,162,39,.1);border:1px solid var(--gold);border-radius:10px;
+    color:var(--gold-bright);font-family:var(--sans);font-size:14px;font-weight:500;
+    padding:0 18px;min-height:48px;cursor:pointer;white-space:nowrap;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .idea-add-btn:active{background:rgba(201,162,39,.18)}
+  .idea-count{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .idea-empty{
+    font-size:13px;color:var(--muted);font-style:italic;line-height:1.5;
+    padding:16px;border:1px dashed var(--line-soft);border-radius:10px;
+  }
+  .idea{
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:13px 14px;margin-bottom:10px;
+  }
+  .idea-text{font-size:15px;line-height:1.45;word-break:break-word}
+  .idea.posted .idea-text{color:var(--muted);text-decoration:line-through}
+  .idea-acts{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .idea-status{
+    display:inline-flex;align-items:center;gap:7px;
+    background:transparent;border:1px solid var(--line);border-radius:100px;
+    color:var(--muted);font-family:var(--sans);font-size:13px;
+    padding:8px 14px;min-height:40px;cursor:pointer;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .idea-status .sdot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0}
+  .idea.posted .idea-status{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,162,39,.08)}
+  .idea.posted .idea-status .sdot{background:var(--gold);border-color:var(--gold)}
+  .idea-del{
+    margin-left:auto;background:transparent;border:1px solid var(--line-soft);border-radius:8px;
+    color:var(--muted);font-size:15px;width:40px;height:40px;min-width:40px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .idea-del:active{border-color:var(--danger);color:var(--danger)}
+
+  /* ---------- Fereastra de consum ---------- */
   .window-box{
     background:var(--surface);border:1px solid var(--line-soft);
     border-radius:10px;padding:18px;text-align:center;
   }
   .window-box .state{font-family:var(--serif);font-size:22px;font-weight:600}
   .window-box .detail{font-size:12px;color:var(--muted);margin-top:6px}
-  .window-box.open{border-color:var(--gold);background:rgba(201,162,39,.08)}
-  .window-box.open .state{color:var(--gold-bright);animation:pulse 2.2s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .window-box.closed{border-color:rgba(179,85,46,.5);background:rgba(179,85,46,.08)}
+  .window-box.closed .state{color:#d98c6a}
+  .window-box.open{border-color:rgba(127,174,118,.6);background:rgba(127,174,118,.10)}
+  .window-box.open .state{color:#9ccb90;animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
   @media (prefers-reduced-motion:reduce){.window-box.open .state{animation:none}}
 
   /* ---------- TikTok drain ---------- */
@@ -177,6 +260,37 @@
   .tmr input::placeholder{color:var(--muted);opacity:.7}
   .tmr .hint{font-size:12px;color:var(--muted);margin-top:4px}
 
+  /* ---------- Backup ---------- */
+  .backup-btns{display:flex;gap:10px}
+  .bkp-btn{
+    flex:1;background:transparent;border:1px solid var(--line);border-radius:8px;
+    color:var(--text);font-family:var(--sans);font-size:14px;padding:13px 0;
+    cursor:pointer;transition:border-color .15s;min-height:46px;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .bkp-btn:active{border-color:var(--gold);background:rgba(201,162,39,.08)}
+  .bkp-panel{margin-top:14px}
+  .bkp-panel[hidden]{display:none}
+  .bkp-msg{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.55}
+  .bkp-msg.ok{color:var(--gold-bright)}
+  .bkp-msg.err{color:#e0906b}
+  .bkp-area{
+    width:100%;min-height:120px;background:var(--surface2);
+    border:1px solid var(--line-soft);border-radius:10px;padding:12px;
+    color:var(--text);font-family:ui-monospace,Menlo,monospace;font-size:16px;
+    line-height:1.4;outline:none;resize:vertical;-webkit-appearance:none;
+  }
+  .bkp-area:focus{border-color:var(--gold)}
+  .bkp-actions{display:flex;gap:10px;margin-top:12px}
+  .bkp-actions button{
+    flex:1;border-radius:8px;padding:12px 0;font-family:var(--sans);font-size:14px;
+    cursor:pointer;min-height:46px;border:1px solid var(--line);
+    background:transparent;color:var(--text);
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .bkp-actions button.primary{border-color:var(--gold);background:rgba(201,162,39,.1);color:var(--gold-bright)}
+  .bkp-actions button:active{background:rgba(201,162,39,.08)}
+
   /* ---------- Footer ---------- */
   footer{text-align:center;padding-top:30px}
   footer .sa{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:15px}
@@ -193,6 +307,13 @@
     pointer-events:none;
   }
   .savenote.show{opacity:1}
+  .saveerr{
+    position:fixed;top:calc(8px + env(safe-area-inset-top));left:12px;right:12px;
+    z-index:50;background:#2a1410;border:1px solid var(--danger);
+    color:#e8b9a3;font-size:12px;line-height:1.4;text-align:center;
+    padding:10px 14px;border-radius:10px;
+  }
+  .saveerr[hidden]{display:none}
   :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
@@ -202,8 +323,6 @@
     section{padding:24px 0}
     .quote{padding:26px 4px 22px}
     .streak{padding:26px 0 22px}
-    .cal{grid-template-columns:repeat(10,1fr);gap:7px;max-width:100%}
-    .cal div{border-radius:4px}
     .mission{padding:14px 12px;gap:10px}
     .checkbox{width:32px;height:32px;min-width:32px;border-radius:8px;font-size:17px}
     .tag-text{display:none}
@@ -217,6 +336,8 @@
 </style>
 </head>
 <body>
+<div class="saveerr" id="saveerr" hidden>⚠ Nu am putut salva pe acest telefon. Fă un backup acum (secțiunea „Copie de siguranță") și verifică spațiul liber din telefon.</div>
+
 <div class="wrap">
 
   <header>
@@ -231,6 +352,10 @@
     <div class="streak-num" id="streakNum">0</div>
     <div class="streak-label">zile stăpânite la rând</div>
     <div class="day-status" id="dayStatus">Ziua nu e câștigată încă</div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num" id="statLongest">0</div><div class="stat-label">Cel mai lung</div></div>
+      <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total zile</div></div>
+    </div>
     <div class="cal" id="cal"></div>
     <div class="cal-label">Ultimele 30 de zile</div>
   </div>
@@ -241,7 +366,22 @@
   </section>
 
   <section>
-    <h2>Fereastra de postare</h2>
+    <h2>Marcaje rapide<span class="sub">Mici victorii. Atinge când le faci. Nu afectează streak-ul.</span></h2>
+    <div class="marks" id="marks"></div>
+  </section>
+
+  <section>
+    <h2>Idei de conținut<span class="sub">Depozitul tău. Adaugă oricând îți vine ceva — rămân aici, nu se șterg zilnic.</span></h2>
+    <div class="idea-add">
+      <input type="text" id="ideaInput" placeholder="Scrie o idee de postare..." autocomplete="off">
+      <button type="button" class="idea-add-btn" onclick="addIdea()">Adaugă</button>
+    </div>
+    <div class="idea-count" id="ideaCount"></div>
+    <div class="idea-list" id="ideaList"></div>
+  </section>
+
+  <section>
+    <h2>Fereastra de consum</h2>
     <div class="window-box" id="windowBox">
       <div class="state" id="windowState"></div>
       <div class="detail" id="windowDetail"></div>
@@ -269,6 +409,19 @@
       <input type="text" id="tmr1" placeholder="2." autocomplete="off">
       <input type="text" id="tmr2" placeholder="3." autocomplete="off">
       <div class="hint" id="tmrHint"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Copie de siguranță<span class="sub">Streak-ul trăiește doar în acest telefon. Fă o copie din când în când.</span></h2>
+    <div class="backup-btns">
+      <button class="bkp-btn" type="button" onclick="openBackup()">Fă backup</button>
+      <button class="bkp-btn" type="button" onclick="openRestore()">Restaurează</button>
+    </div>
+    <div class="bkp-panel" id="bkpPanel" hidden>
+      <div class="bkp-msg" id="bkpMsg"></div>
+      <textarea id="bkpArea" class="bkp-area" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></textarea>
+      <div class="bkp-actions" id="bkpActions"></div>
     </div>
   </section>
 
@@ -315,37 +468,63 @@ const QUOTES = [
 "Sapere aude. Îndrăznește să știi ce ai de făcut — și fă."
 ];
 
+/* ================= Marcaje rapide (fixe, editabile mai târziu) ================= */
+const MARKS = [
+  {id:'pat',    label:'Fă patul'},
+  {id:'apa',    label:'Bea apă'},
+  {id:'citit',  label:'Citit 10 min'},
+  {id:'mancat', label:'Am mâncat curat'},
+  {id:'sport',  label:'Sport / plimbare'},
+  {id:'scroll', label:'Fără scroll dimineața'},
+  {id:'somn',   label:'Somn la timp'},
+  {id:'postat', label:'Am postat'}
+];
+
 /* ================= State (localStorage — datele stau în telefonul tău) ================= */
 const KEY = 'qm-command-center-v1';
-let state = { days:{}, planned:{} };
+let state = { days:{}, planned:{}, ideas:[] };
 let currentKey = dkey(new Date());
 
 function dkey(d){
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 function emptyDay(){
-  return { missions:[{t:'',d:false},{t:'',d:false},{t:'',d:false}], tiktok:0 };
+  return { missions:[{t:'',d:false},{t:'',d:false},{t:'',d:false}], tiktok:0, marks:{} };
 }
 function dayWon(day){ return !!(day && day.missions[0].d && day.missions[0].t.trim()); }
+
+function normalizeState(){
+  if(!state || typeof state!=='object') state={};
+  if(!state.days || typeof state.days!=='object') state.days={};
+  if(!state.planned || typeof state.planned!=='object') state.planned={};
+  if(!Array.isArray(state.ideas)) state.ideas=[];
+}
 
 function loadState(){
   try{
     const raw = localStorage.getItem(KEY);
     if(raw) state = JSON.parse(raw);
   }catch(e){ console.error('Nu am putut citi datele', e); }
+  normalizeState();
 }
 let noteTimer=null;
 function save(showNote){
   try{
     localStorage.setItem(KEY, JSON.stringify(state));
+    hideSaveError();
     if(showNote){
       const n=document.getElementById('savenote');
       n.classList.add('show');
       clearTimeout(noteTimer);
       noteTimer=setTimeout(()=>n.classList.remove('show'),1200);
     }
-  }catch(e){ console.error('Salvare eșuată', e); }
+  }catch(e){
+    console.error('Salvare eșuată', e);
+    showSaveError();
+  }
 }
+function showSaveError(){ const el=document.getElementById('saveerr'); if(el) el.hidden=false; }
+function hideSaveError(){ const el=document.getElementById('saveerr'); if(el) el.hidden=true; }
 
 /* ================= Day init / rollover ================= */
 function ensureToday(){
@@ -360,6 +539,7 @@ function ensureToday(){
     state.days[k] = day;
     save(false);
   }
+  if(!state.days[k].marks) state.days[k].marks = {};
 }
 
 /* ================= Render ================= */
@@ -386,6 +566,26 @@ function computeStreak(){
     else break;
   }
   return streak;
+}
+function computeLongestStreak(){
+  const keys=Object.keys(state.days).filter(k=>dayWon(state.days[k])).sort();
+  if(!keys.length) return 0;
+  let longest=1, run=1;
+  for(let i=1;i<keys.length;i++){
+    const prev=new Date(keys[i-1]+'T00:00:00');
+    const cur=new Date(keys[i]+'T00:00:00');
+    const diff=Math.round((cur-prev)/86400000);
+    run = diff===1 ? run+1 : 1;
+    if(run>longest) longest=run;
+  }
+  return longest;
+}
+function computeTotalWon(){
+  return Object.keys(state.days).filter(k=>dayWon(state.days[k])).length;
+}
+function renderStats(){
+  document.getElementById('statLongest').textContent = computeLongestStreak();
+  document.getElementById('statTotal').textContent = computeTotalWon();
 }
 function renderStreak(){
   document.getElementById('streakNum').textContent = computeStreak();
@@ -421,7 +621,7 @@ function renderMissions(){
     inp.onblur=()=>{ save(true); };
     cb.onclick=()=>{
       if(!m.t.trim() && !m.d){ inp.focus(); return; }
-      m.d=!m.d; save(true); renderMissions(); renderStreak();
+      m.d=!m.d; save(true); renderMissions(); renderStreak(); renderStats();
     };
     row.appendChild(cb);
     if(i===0){ const tag=document.createElement('span'); tag.className='tag'; tag.innerHTML='★ <span class="tag-text">principală</span>'; row.appendChild(tag); }
@@ -429,22 +629,85 @@ function renderMissions(){
     box.appendChild(row);
   });
 }
+function renderMarks(){
+  const day=state.days[currentKey];
+  if(!day.marks) day.marks={};
+  const box=document.getElementById('marks'); box.innerHTML='';
+  MARKS.forEach(mk=>{
+    const on=!!day.marks[mk.id];
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='mark'+(on?' on':'');
+    b.setAttribute('aria-pressed', on?'true':'false');
+    const dot=document.createElement('span'); dot.className='dot';
+    b.appendChild(dot);
+    b.appendChild(document.createTextNode(mk.label));
+    b.onclick=()=>{ day.marks[mk.id]=!day.marks[mk.id]; save(true); renderMarks(); };
+    box.appendChild(b);
+  });
+}
+function renderIdeas(){
+  const box=document.getElementById('ideaList'); box.innerHTML='';
+  const total=state.ideas.length;
+  const posted=state.ideas.filter(x=>x.posted).length;
+  document.getElementById('ideaCount').textContent =
+    total===0 ? '' : (total+(total===1?' idee':' idei')+' · '+posted+' postate');
+  if(total===0){
+    const e=document.createElement('div'); e.className='idea-empty';
+    e.textContent='Nicio idee încă. Adaugă prima când îți vine ceva — rămân aici permanent.';
+    box.appendChild(e); return;
+  }
+  state.ideas.forEach(idea=>{
+    const card=document.createElement('div');
+    card.className='idea'+(idea.posted?' posted':'');
+    const txt=document.createElement('div'); txt.className='idea-text'; txt.textContent=idea.text;
+    const acts=document.createElement('div'); acts.className='idea-acts';
+    const stBtn=document.createElement('button'); stBtn.type='button'; stBtn.className='idea-status';
+    stBtn.setAttribute('aria-pressed', idea.posted?'true':'false');
+    const sdot=document.createElement('span'); sdot.className='sdot';
+    stBtn.appendChild(sdot);
+    stBtn.appendChild(document.createTextNode(idea.posted?'postată':'postată?'));
+    stBtn.onclick=()=>{ idea.posted=!idea.posted; save(true); renderIdeas(); };
+    const delBtn=document.createElement('button'); delBtn.type='button'; delBtn.className='idea-del';
+    delBtn.setAttribute('aria-label','Șterge ideea');
+    delBtn.textContent='✕';
+    delBtn.onclick=()=>{
+      if(!confirm('Ștergi ideea „'+idea.text+'"? Nu se poate anula.')) return;
+      state.ideas=state.ideas.filter(x=>x!==idea);
+      save(true); renderIdeas();
+    };
+    acts.appendChild(stBtn); acts.appendChild(delBtn);
+    card.appendChild(txt); card.appendChild(acts);
+    box.appendChild(card);
+  });
+}
+function addIdea(){
+  const inp=document.getElementById('ideaInput');
+  const v=(inp.value||'').trim();
+  if(!v) return;
+  state.ideas.unshift({ id:Date.now()+'-'+Math.random().toString(36).slice(2,7), text:v, posted:false });
+  inp.value='';
+  save(true); renderIdeas();
+  inp.focus();
+}
 function renderWindow(){
   const h=new Date().getHours();
   const box=document.getElementById('windowBox');
   const st=document.getElementById('windowState');
   const dt=document.getElementById('windowDetail');
-  box.classList.remove('open');
-  if(h>=19 && h<22){
+  box.classList.remove('open','closed');
+  if(h>=20 && h<22){
     box.classList.add('open');
-    st.textContent='Fereastra e deschisă — postează';
-    dt.textContent='19:00 – 22:00 · momentul tău';
-  }else if(h<19){
-    st.textContent='Fereastra se deschide la 19:00';
-    dt.textContent='Până atunci: creezi, nu consumi.';
+    st.textContent='Deschisă — te poți relaxa';
+    dt.textContent='20:00 – 22:00 · ți-ai câștigat-o.';
+  }else if(h<20){
+    box.classList.add('closed');
+    st.textContent='Închisă — creezi, nu consumi';
+    dt.textContent='Se deschide la 20:00.';
   }else{
-    st.textContent='Fereastra s-a închis';
-    dt.textContent='Mâine, 19:00. Acum: ritualul de seară.';
+    box.classList.add('closed');
+    st.textContent='Închisă pe azi';
+    dt.textContent='Gata. Somn la timp. Mâine, 20:00.';
   }
 }
 function renderDrain(){
@@ -478,21 +741,101 @@ function renderTomorrow(){
   const t=new Date(Date.now()+86400000);
   document.getElementById('tmrHint').textContent='Pentru '+DAYS[t.getDay()]+', '+t.getDate()+' '+MONTHS[t.getMonth()]+'.';
 }
+
+/* ================= Backup / Restore (Copiază / Lipește) ================= */
+function bkpSetMsg(txt, cls){
+  const m=document.getElementById('bkpMsg');
+  m.textContent=txt; m.className='bkp-msg'+(cls?(' '+cls):'');
+}
+function closeBackup(){
+  document.getElementById('bkpPanel').hidden=true;
+  document.getElementById('bkpArea').value='';
+  document.getElementById('bkpActions').innerHTML='';
+}
+function mkBtn(label, cls, fn){
+  const b=document.createElement('button'); b.type='button';
+  if(cls) b.className=cls;
+  b.textContent=label; b.onclick=fn; return b;
+}
+function openBackup(){
+  document.getElementById('bkpPanel').hidden=false;
+  const area=document.getElementById('bkpArea');
+  area.readOnly=true;
+  area.value=JSON.stringify(state);
+  bkpSetMsg('Aceasta e copia ta. Apasă „Copiază", apoi lipește-o într-o notiță (Notes) sau într-un mesaj către tine. Păstreaz-o.');
+  const acts=document.getElementById('bkpActions'); acts.innerHTML='';
+  acts.appendChild(mkBtn('Copiază','primary',copyBackup));
+  acts.appendChild(mkBtn('Închide','',closeBackup));
+  copyBackup();
+}
+function copyBackup(){
+  const area=document.getElementById('bkpArea');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(area.value).then(function(){
+      bkpSetMsg('Copiat ✓ Acum lipește copia într-o notiță (Notes) și păstreaz-o.','ok');
+    }).catch(function(){ manualCopyHint(area); });
+  } else {
+    manualCopyHint(area);
+  }
+}
+function manualCopyHint(area){
+  area.readOnly=false; area.focus();
+  try{ area.setSelectionRange(0, area.value.length); }catch(e){}
+  try{ if(document.execCommand) document.execCommand('copy'); }catch(e){}
+  area.readOnly=true;
+  bkpSetMsg('Ține apăsat pe text → „Select All" → „Copy", apoi lipește-l într-o notiță.','');
+}
+function openRestore(){
+  document.getElementById('bkpPanel').hidden=false;
+  const area=document.getElementById('bkpArea');
+  area.readOnly=false; area.value='';
+  bkpSetMsg('Lipește aici copia salvată mai devreme, apoi apasă „Restaurează acum". Atenție: înlocuiește datele actuale de pe acest telefon.');
+  const acts=document.getElementById('bkpActions'); acts.innerHTML='';
+  acts.appendChild(mkBtn('Restaurează acum','primary',doRestore));
+  acts.appendChild(mkBtn('Închide','',closeBackup));
+  area.focus();
+}
+function validState(o){
+  return o && typeof o==='object'
+    && o.days && typeof o.days==='object'
+    && o.planned && typeof o.planned==='object';
+}
+function doRestore(){
+  const txt=document.getElementById('bkpArea').value.trim();
+  if(!txt){ bkpSetMsg('Caseta e goală. Lipește întâi copia.','err'); return; }
+  let obj;
+  try{ obj=JSON.parse(txt); }
+  catch(e){ bkpSetMsg('Textul lipit nu e o copie validă. Verifică să fi copiat tot, de la { până la ultima }.','err'); return; }
+  if(!validState(obj)){ bkpSetMsg('Copia pare incompletă sau greșită. Nu am schimbat nimic.','err'); return; }
+  if(!confirm('Restaurezi din copie? Datele actuale de pe acest telefon vor fi înlocuite. Nu se poate anula.')) return;
+  state=obj;
+  normalizeState();
+  save(true);
+  ensureToday();
+  renderAll();
+  closeBackup();
+  alert('Gata. Datele au fost restaurate din copie.');
+}
+
 function resetAll(){
-  if(!confirm('Sigur? Se șterg streak-ul, istoricul și tot ce ai scris. Nu se poate anula.')) return;
-  state={days:{},planned:{}};
+  if(!confirm('Sigur? Se șterg streak-ul, istoricul, ideile și tot ce ai scris. Nu se poate anula.')) return;
+  state={days:{},planned:{},ideas:[]};
   try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
   ensureToday(); renderAll();
 }
 function renderAll(){
-  renderHeader(); renderQuote(); renderStreak();
-  renderMissions(); renderWindow(); renderDrain(); renderTomorrow();
+  renderHeader(); renderQuote(); renderStreak(); renderStats();
+  renderMissions(); renderMarks(); renderIdeas(); renderWindow(); renderDrain(); renderTomorrow();
 }
 
 /* ================= Boot ================= */
 loadState();
 ensureToday();
 renderAll();
+(function(){
+  const inp=document.getElementById('ideaInput');
+  if(inp){ inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); addIdea(); } }); }
+})();
 setInterval(()=>{
   renderWindow();
   if(dkey(new Date())!==currentKey){ ensureToday(); renderAll(); }
@@ -500,4 +843,3 @@ setInterval(()=>{
 </script>
 </body>
 </html>
-
